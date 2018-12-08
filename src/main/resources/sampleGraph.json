@@ -1,0 +1,35 @@
+{
+  "nodes": [
+    {
+      "type": "Game",
+      "index": 0,
+      "gameName": "1984 Summer",
+      "season": "Summer",
+      "city": "Los Angeles"
+    },
+    {
+      "type": "Event",
+      "index": 1,
+      "name": "Swimming Men's 1,500 metres Freestyle"
+    },
+    {
+      "type": "Athlete",
+      "index": 2,
+      "name": "Rainer Henkel",
+      "country": "West Germany"
+    }
+  ],
+  "links": [
+    {
+      "type": "HOST",
+      "source": 0,
+      "target": 1
+    },
+    {
+      "type": "PARTICIPATED_IN",
+      "source": 2,
+      "target": 1,
+      "medal": "Silver"
+    }
+  ]
+}
