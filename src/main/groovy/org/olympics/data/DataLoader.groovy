@@ -19,8 +19,6 @@ import org.springframework.stereotype.Component
 @Slf4j
 class DataLoader implements ApplicationRunner {
 
-  Boolean loadOlympicData = true
-
   @Autowired
   LoadDataService loadDataService
 
@@ -37,7 +35,7 @@ class DataLoader implements ApplicationRunner {
   OlympicsConfig olympicsConfig
 
   void run(ApplicationArguments args) {
-    if (loadOlympicData) {
+    if (olympicsConfig.loadData) {
 
      String dataFileName = olympicsConfig.dataFileName
      log.info "load data from resource file: $dataFileName"

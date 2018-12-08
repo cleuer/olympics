@@ -10,4 +10,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 class OlympicsConfig {
 
   String dataFileName
+  Boolean loadData
 }
