@@ -22,7 +22,7 @@ class Event {
   Long id
 
   String name
-  String sport //todo: implement later
+  String sport
   //Game game
   Integer year
 

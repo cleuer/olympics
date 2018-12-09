@@ -31,24 +31,24 @@ class GraphService {
   private static final Integer DEPTH = 5
 
   @Transactional(readOnly = true)
-  String getGraphByYearAndSeason(Integer year, String season) {
+  String getGraphByYearAndSeason(Integer year, String season, String sport) {
     Game game = gameRepository.findOneByYearAndSeason(year, season)
     if (game) {
       log.info "found game: ${game.name} hosted in city: ${game.city}"
-      buildGraphForGame(game)
+      buildGraphForGame(game, sport)
     } else {
       log.info "could not find game for year: $year and season: $season"
       EMPTY_JSON
     }
   }
 
-  protected String buildGraphForGame(Game game) {
+  String buildGraphForGame(Game game, String sport) {
 
     log.info "build graph for game: $game"
 
     List<Map<String, Object>> nodes
     List<Map<String, Object>> links
-    (nodes, links) = getNodesAndLinks(game)
+    (nodes, links) = getNodesAndLinks(game, sport)
 
     new JsonBuilder(
         [
@@ -64,7 +64,7 @@ class GraphService {
    * @param game
    * @return
    */
-  Tuple getNodesAndLinks(Game game) {
+  Tuple getNodesAndLinks(Game game, String sport) {
 
     List<Map<String, Object>> nodes = []
     List<Map<String, Object>> links = []
@@ -83,44 +83,47 @@ class GraphService {
 
     //2. add event nodes
     game.events.each { event ->
-      int eventIndex = i
-      nodes << [
-          type: Event.simpleName,
-          index: eventIndex,
-          name: event.name
-      ]
-      i++
 
-    //3 add game -> HOST -> event link
-      links << [
-          type: HOST,
-          source: gameIndex,
-          target: eventIndex
-      ]
+      if (includeEvent(event, sport)) {
 
-//     4. add event nodes
-      List<Result> results = event?.results
-
-      results.each { result ->
-        int athleteIndex = i
-        Athlete athlete = result.athlete
+        int eventIndex = i
         nodes << [
-            type: Athlete.simpleName,
-            index: athleteIndex,
-            name: athlete.name,
-            country: athlete.country
+            type : Event.simpleName,
+            index: eventIndex,
+            name : event.name
         ]
         i++
 
-     //5. add athlete -> PARTICIPATED_IN -> event link
+        //3 add game -> HOST -> event link
         links << [
-            type: PARTICIPATED_IN,
-            source: athleteIndex,
-            target: eventIndex,
-            medal: result.medal
+            type  : HOST,
+            source: gameIndex,
+            target: eventIndex
         ]
-      }
 
+//     4. add event nodes
+        List<Result> results = event?.results
+
+        results.each { result ->
+          int athleteIndex = i
+          Athlete athlete = result.athlete
+          nodes << [
+              type   : Athlete.simpleName,
+              index  : athleteIndex,
+              name   : athlete.name,
+              country: athlete.country
+          ]
+          i++
+
+          //5. add athlete -> PARTICIPATED_IN -> event link
+          links << [
+              type  : PARTICIPATED_IN,
+              source: athleteIndex,
+              target: eventIndex,
+              medal : result.medal
+          ]
+        }
+      }
       //4. add athlete nodes and links
 //      List<Tuple> athleteData = event.results.collect { r  ->
 //        def athleteNode = [
@@ -145,6 +148,20 @@ class GraphService {
     }
     log.info "getNodesAndLinks() nodes found: $i"
     new Tuple(nodes, links)
+  }
+
+  /**
+   * Return true if filter sport matches event sport Or sport filter is null
+   * @param event
+   * @param sport
+   * @return
+   */
+  private Boolean includeEvent (Event event, String sport) {
+    if (sport) {
+      sport.toLowerCase() == event.sport?.toLowerCase()
+    } else {
+      true
+    }
   }
 
 }

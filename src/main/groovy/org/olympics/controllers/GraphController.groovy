@@ -24,10 +24,11 @@ class GraphController {
 
   @GetMapping('/graph')
   @ResponseStatus(HttpStatus.OK)
-  String getSuspectConditions(@RequestParam(value='year', required = true) Integer year,
-                              @RequestParam(value='season', required = true) String season) {
-    log.info("GET graph request for $year $season olympics")
-    graphService.getGraphByYearAndSeason(year, season)
+  String getGraphByYearAndSeason(@RequestParam(value='year', required = true) Integer year,
+                                 @RequestParam(value='season', required = true) String season,
+                                 @RequestParam(value='sport', required = false) String sport) {
+    log.info("Get graph request for $year $season olympics. sport filter: $sport")
+    graphService.getGraphByYearAndSeason(year, season, sport)
   }
 
 }

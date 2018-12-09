@@ -29,7 +29,7 @@ dependencies {
 	implementation('org.springframework.data:spring-data-rest-core:3+')
 	implementation('org.codehaus.groovy:groovy-all:2.5.4')
 	implementation('com.xlson.groovycsv:groovycsv:1.0')
-	runtimeOnly('org.springframework.boot:spring-boot-devtools')
+	implementation("org.springframework.boot:spring-boot-devtools")
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 	//runtime('org.neo4j:neo4j:3.4.10')
 	testImplementation('org.neo4j:neo4j-ogm-embedded-driver:3.1.5')
