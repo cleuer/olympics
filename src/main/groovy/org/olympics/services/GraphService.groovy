@@ -3,29 +3,46 @@ package org.olympics.services
 import groovy.util.logging.Slf4j
 import org.olympics.domains.*
 import org.olympics.repositories.*
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import groovy.json.JsonBuilder
 
 
 /**
  * Service to support graph endpoints
- * Created by cjl7959 on 12/7/18.
+ * See src/resources/main/sampleGraph.json for example of output
+ * Created by C. Leuer
  */
 
 @Slf4j
 @Service
-class OlympicsService {
+class GraphService {
+
+  @Autowired
+  GameRepository gameRepository
+
+  @Autowired
+  EventRepository eventRepository
 
   static final String HOST = 'HOST'
   static final String PARTICIPATED_IN = 'PARTICIPATED_IN'
+  static final String EMPTY_JSON = '{}'
+  private static final Integer DEPTH = 5
 
-  String getGraphByGameName(String gameName) {
-    //todo
-    ''
-
+  String getGraphByYearAndSeason(Integer year, String season) {
+    Game game = gameRepository.findOneByYearAndSeason(year, season)
+    if (game) {
+      log.info "found game: ${game.name} hosted in city: ${game.city}"
+      buildGraphForGame(game)
+    } else {
+      log.info "could not find game for year: $year and season: $season"
+      EMPTY_JSON
+    }
   }
 
-  String buildGraphForGame(Game game) {
+  protected String buildGraphForGame(Game game) {
+
+    log.info "build graph for game: $game"
 
     List<Map<String, Object>> nodes
     List<Map<String, Object>> links
@@ -79,8 +96,10 @@ class OlympicsService {
           target: eventIndex
       ]
 
-     //4. add event nodes
-      event.results.each { result ->
+//     4. add event nodes
+      List<Result> results = event?.results
+
+      results.each { result ->
         int athleteIndex = i
         Athlete athlete = result.athlete
         nodes << [
@@ -99,6 +118,28 @@ class OlympicsService {
             medal: result.medal
         ]
       }
+
+      //4. add athlete nodes and links
+//      List<Tuple> athleteData = event.results.collect { r  ->
+//        def athleteNode = [
+//            type: Athlete.simpleName,
+//            index: i,
+//            name: r.athlete.name,
+//            country: r.athlete.country
+//        ]
+//
+//        def athleteLink = [
+//            type: PARTICIPATED_IN,
+//            source: i,
+//            target: eventIndex,
+//            medal: r.medal
+//        ]
+//        i++
+//        new Tuple(athleteNode, athleteLink)
+//      }
+//      nodes.addAll(athleteData.get(0))
+//      links.addAll(athleteData.get(1))
+
     }
     log.info "getNodesAndLinks() nodes found: $i"
     new Tuple(nodes, links)

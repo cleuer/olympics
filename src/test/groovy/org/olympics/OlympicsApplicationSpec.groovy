@@ -1,16 +1,16 @@
 package org.olympics
 
 import org.olympics.domains.*
-import org.olympics.services.OlympicsService
+import org.olympics.services.GraphService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
 
-@SpringBootTest(classes = OlympicsService)
+@SpringBootTest(classes = OlympicsApplication)
 class OlympicsApplicationSpec extends Specification {
 
 	@Autowired
-	OlympicsService olympicsService
+	GraphService olympicsService
 
 	void 'json builds for graph'() {
 
@@ -19,7 +19,7 @@ class OlympicsApplicationSpec extends Specification {
 		Event event = new Event(id: 1L, name: "Swimming Men's 1,500 metres Freestyle")
 		Athlete athlete = new Athlete(id:2L, name: 'Rainer Henkel', country: 'West Germany')
 		Result result = new Result(id: 3L, athlete: athlete, event: event, medal: Medal.Silver)
-		event.results.add(result)
+		event.addResult(result)
 		game.events.add(event)
 
 		when: 'build graph for game'

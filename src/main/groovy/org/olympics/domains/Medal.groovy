@@ -2,7 +2,7 @@ package org.olympics.domains
 
 /**
  * Medal of Gold, Silver or Bronze
- * Created by cjl7959 on 12/6/18.
+ * Created by C. Leuer
  */
 enum Medal {
 

@@ -6,6 +6,7 @@ import org.olympics.domains.*
 import org.olympics.repositories.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * Load Olymic data service
@@ -25,25 +26,45 @@ class LoadDataService {
   @Autowired
   GameRepository gameRepository
 
+  private static final Integer DEPTH_FOUR = 4
+  private static final Integer DEPTH_ONE = 1
+
+  /**
+   * Idempotent persistence of Games, Events and Athletes for a single line of input
+   * @param input
+   */
+  @Transactional
   void loadOlympicData(InputLine input) {
 
     Game game = getGame(input)
     Event event = getEvent(input, game)
     Athlete athlete = getAthlete(input, event)
-    game.events.add(event)
+
     Result result = getResult(input, athlete, event)
-    event.results.add(result)
 
-    log.info "save game: $game"
-    gameRepository.save(game)
-
-    log.info "save event: $event"
-    eventRepository.save(event)
+    event.results.removeAll { r -> r.athlete == result.athlete && r.event == result.event }
+    event.addResult(result)
 
     log.info "save athlete: $athlete"
-    athleteRepository.save(athlete)
+    athleteRepository.save(athlete, DEPTH_FOUR) //optional but increase game depth
+
+    log.info "update event with results: $event"
+    eventRepository.save(event, DEPTH_FOUR) //optional but increase game depth
+
+    game.events.remove(event)
+    game.events.add(event)
+
+    Game savedGame = gameRepository.save(game, DEPTH_ONE) //optimized to save at 1 depth since event + results already persisted
+
+    log.info "saved game: ${savedGame.name}, event: ${event.name}  and athlete: ${athlete.name}"
+
   }
 
+  /**
+   * Get new Game if not found, or udpate existing Game
+   * @param input
+   * @return Game
+   */
   Game getGame(InputLine input) {
 
     Game game = gameRepository.findOneByName(input.gameName)
@@ -62,6 +83,12 @@ class LoadDataService {
     }
   }
 
+  /**
+   * Get new Event if not found, or update existing Event
+   * @param input
+   * @param game
+   * @return
+   */
   Event getEvent(InputLine input, Game game) {
     Event event = eventRepository.findOneByNameAndYear(input.event, input.year)
     if (event) {
@@ -70,7 +97,6 @@ class LoadDataService {
       log.info("event not found for event: ${input.event} and year: ${input.year}")
       event = new Event()
     }
-//    event.game = game
     event.with {
       name = input.event
       sport = input.sport
@@ -79,6 +105,12 @@ class LoadDataService {
     }
   }
 
+  /**
+   * Get new athlete if not found or update existing Event
+   * @param input
+   * @param event
+   * @return Athlete
+   */
   Athlete getAthlete(InputLine input, Event event) {
     Athlete athlete = athleteRepository.findOneByNameAndSexAndCountryAbbr(input.name, input.sex, input.noc)
     if (athlete) {
@@ -87,6 +119,7 @@ class LoadDataService {
       log.info("athlete not found by name: ${input.name}")
       athlete = new Athlete()
     }
+    //todo: add back
     athlete.events.add(event)
     athlete.with {
       name = input.name
@@ -99,13 +132,20 @@ class LoadDataService {
       it
     }
   }
+/**
+ * Get Result for an athlete in an event
+ * @param input
+ * @param athlete
+ * @param event
+ * @return Result
+ */
 
   Result getResult(InputLine input, Athlete athlete, Event event) {
     new Result().with {
       id = input.id
       it.athlete = athlete
       it.event = event
-      medal = input.medal
+      it.medal = input.medal
       it
     }
   }

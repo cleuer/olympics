@@ -9,7 +9,7 @@ import org.neo4j.ogm.annotation.Relationship
 
 /**
  * Athlete who participated in Olympic event
- * Created by cjl7959 on 12/6/18.
+ * Created by cjl7959 on 12/1/18.
  */
 @NodeEntity
 @ToString(includeNames = true, excludes = 'events')
@@ -29,6 +29,6 @@ class Athlete {
   String countryAbbr
 
   @Relationship(type = "PARTICIPATED_IN")
-  Set<Event> events = []
+  List<Event> events = []
 
 }

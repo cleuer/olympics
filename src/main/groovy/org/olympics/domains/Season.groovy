@@ -2,7 +2,7 @@ package org.olympics.domains
 
 /**
  * Season of Olympic game: Winter or Summer
- * Created by cjl7959 on 12/6/18.
+ * Created by C. Leuer
  */
 enum Season {
 

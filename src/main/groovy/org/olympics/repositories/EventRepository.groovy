@@ -7,7 +7,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource
 
 /**
  * Events repository with REST enabled
- * Created by cjl7959 on 12/6/18.
+ * Created by C. Leuer
  */
 @RepositoryRestResource(collectionResourceRel = "events", path = "events")
 interface EventRepository extends Neo4jRepository<Event, Long> {

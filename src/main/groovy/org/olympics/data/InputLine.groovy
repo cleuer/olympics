@@ -6,7 +6,7 @@ import groovy.util.logging.Slf4j
 
 /**
  * An input line of olympics results
- * Created by cjl7959 on 12/6/18.
+ * Created by C. Leuer
  *
  * ATTRIBUTION: Library https://github.com/xlson/groovycsv/
  * to parse csv lines. Author: Leonard Gram.

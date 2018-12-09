@@ -2,7 +2,7 @@
 
 **Overview**
 --------------------------------------------------------------------------
-Web application represents 120 years Olympic History.  Participation and results from every Olympic event 
+Represent 120 years Olympic History as Graph.  Participation and results from every Olympic event 
  over 120 years is represented in graph form. Nodes include games, events and athletes. Relationships are 
  athlete participation in events and events hosted by games.
  
@@ -53,4 +53,4 @@ Historical dataset of 120 years Olympic history is available on kaggle.com
 
 [120 years of Olympic history: athletes and results](https://www.kaggle.com/heesoo37/120-years-of-olympic-history-athletes-and-results)
 
-_Special thanks to Randi H Griffin and contributors to www.sports-reference.com for creating this dataset_
+_Special thanks to Randi H Griffin and contributors to www.sports-reference.com for creating and curating this dataset_

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component
 /**
  *  Load Olympic History Data
  *  Name of data file can be change int application.properties to use smaller datasets
+ * Created by C. Leuer
  */
 @Component
 @Slf4j

@@ -7,7 +7,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource
 
 /**
  * Athlete repository
- * Created by cjl7959 on 12/6/18.
+ * Created by C. Leuer
  */
 @RepositoryRestResource(collectionResourceRel = "athletes", path = "athletes")
 interface AthleteRepository extends Neo4jRepository<Athlete, Long> {
