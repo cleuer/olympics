@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+    .node.actor { fill: #888; }
+    .node.movie { fill: #BBB; }
+    .link { stroke: #999; stroke-opacity: .6; stroke-width: 1px; }
+    .node text {
+        pointer-events: auto;
+        font: 10px sans-serif;
+        text-anchor: middle;
+    }
+</style>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neo4j Movies</title>
+</head>
+
+<body>
+
+<form name="myform" onSubmit="return handleClick()">
+    <input type="text" id="yearId" placeholder="Add Year&hellip;">
+    <input name="Submit"  type="submit" value="Add Year" >
+</form>
+
+<ul></ul>
+
+
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript">
+
+
+  function draw(url) {
+
+    console.log("draw olympics");
+
+    var width = 960,
+    height = 500
+
+    var svg = d3.select("body").append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+  var force = d3.layout.force()
+            .charge(-200).linkDistance(100).size([width, height]);
+
+     d3.json("/graph?year=1984&season=Summer", function(error, graph) {
+        if (error) return;
+
+        force.nodes(graph.nodes).links(graph.links).start();
+
+         var link = svg.selectAll(".link")
+                     .data(graph.links).enter()
+                     .append("line")
+                     .attr("class", "link");
+
+         var node = svg.selectAll(".node")
+                     .data(graph.nodes).enter().append("g")
+                     .attr("class", "node");
+
+        var circle = node.append("circle")
+                     .attr("r", 25 )
+                     .attr("stroke","black")
+                     .attr("fill", function (d) {
+                        if (d.label == "movie") {
+                          return "lightgreen";
+                        } else {
+                          return "purple";
+                        }
+                      })
+                     .call(force.drag);
+
+        var text = node.append("text")
+           .attr("y", 15)
+           .text(function(d) { return d.title});
+
+        force.on("tick", function() {
+            link.attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+
+             node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+        });
+    });
+    return false;
+  }
+
+  draw();
+
+    function handleClick(event){
+       var year=document.getElementById("yearId").value
+       var url = "/graph?year="+year+"&season=Summer";
+       console.log(url)
+       d3.select("svg").remove();
+       draw(url);
+       return false;
+  }
+
+</script>

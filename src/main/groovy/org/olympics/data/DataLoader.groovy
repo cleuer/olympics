@@ -43,7 +43,7 @@ class DataLoader implements ApplicationRunner {
      InputStream inputStream = getClass().getResourceAsStream("/$dataFileName")
       int l = 0
       new InputStreamReader(inputStream).eachLine { line ->
-        if (l > 0) {
+        if (l == 1) {
           InputLine input = new InputLine(line)
           log.info "$input"
           if (input.gameName == '1984 Summer' && input.sport == 'Swimming') {

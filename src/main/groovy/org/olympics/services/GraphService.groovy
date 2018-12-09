@@ -6,6 +6,7 @@ import org.olympics.repositories.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import groovy.json.JsonBuilder
+import org.springframework.transaction.annotation.Transactional
 
 
 /**
@@ -29,6 +30,7 @@ class GraphService {
   static final String EMPTY_JSON = '{}'
   private static final Integer DEPTH = 5
 
+  @Transactional(readOnly = true)
   String getGraphByYearAndSeason(Integer year, String season) {
     Game game = gameRepository.findOneByYearAndSeason(year, season)
     if (game) {
