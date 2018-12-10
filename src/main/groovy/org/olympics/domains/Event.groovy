@@ -23,8 +23,12 @@ class Event {
 
   String name
   String sport
-  //Game game
   Integer year
+
+  //workaround because seems there is a Spring Data Neo4j BUG saving extra props on relationships
+  String goldMedalist
+  String silverMedalist
+  String bronzeMedalist
 
   @JsonIgnoreProperties('results')
   @Relationship(type = "PARTICIPATED_IN", direction = Relationship.INCOMING)

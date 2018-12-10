@@ -4,7 +4,10 @@
 
     .node.actor { fill: #888; }
     .node.movie { fill: #BBB; }
-    .link { stroke: #999; stroke-opacity: .6; stroke-width: 1px; }
+    .link { stroke: #85abff; stroke-opacity: .6; stroke-width: 2px; }
+    .goldlink { stroke: #ebd200; stroke-opacity: .8; stroke-width: 4px; }
+    .silverlink { stroke: #c0c0c0; stroke-opacity: .8; stroke-width: 4px; }
+    .bronzelink { stroke: #cd7f32; stroke-opacity: .8; stroke-width: 4px; }
     .node text {
         pointer-events: auto;
         font: 10px sans-serif;
@@ -60,7 +63,7 @@
          var link = svg.selectAll(".link")
                      .data(graph.links).enter()
                      .append("line")
-                     .attr("class", "link");
+                     .attr("class", function(l) { return linkClass(l); });
 
          var node = svg.selectAll(".node")
                      .data(graph.nodes).enter().append("g")
@@ -80,7 +83,15 @@
 
         var text = node.append("text")
            .attr("y", 15)
-           .text(function(d) { return d.title});
+           .text(function(d) {
+                  var name
+                  if (d.type == "Game") {
+                     name = d.gameName
+                  } else {
+                     name = d.name
+                  }
+                  return name
+           });
 
         force.on("tick", function() {
             link.attr("x1", function(d) { return d.source.x; })
@@ -111,5 +122,20 @@
        draw(url);
        return false;
   }
+
+     function linkClass(l) {
+       if (l.type == "PARTICIPATED_IN") {
+          if (l.medal == null) {
+             return "link";
+           } else if (l.medal == "Gold") {
+             return "goldlink";
+           } else if (l.medal == "Silver") {
+             return "silverlink";
+           } else if (l.medal == "Bronze") {
+             return "bronzelink";
+           }
+        }
+       return "link";
+     }
 
 </script>

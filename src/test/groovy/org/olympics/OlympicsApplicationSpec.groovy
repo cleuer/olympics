@@ -19,7 +19,7 @@ class OlympicsApplicationSpec extends Specification {
 		String sport = "Swimming"
 		Event event = new Event(id: 1L, name: "Swimming Men's 1,500 metres Freestyle", sport: sport)
 		Athlete athlete = new Athlete(id:2L, name: 'Rainer Henkel', country: 'West Germany')
-		Result result = new Result(id: 3L, athlete: athlete, event: event, medal: Medal.Silver)
+		Result result = new Result(id: 3L, athlete: athlete, event: event, medal: 'Silver')
 		event.addResult(result)
 		game.events.add(event)
 

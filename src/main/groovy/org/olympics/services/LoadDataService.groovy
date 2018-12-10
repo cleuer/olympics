@@ -26,9 +26,10 @@ class LoadDataService {
   @Autowired
   GameRepository gameRepository
 
-  private static final Integer DEPTH_FOUR = 4
-  private static final Integer DEPTH_ONE = 1
+  @Autowired
+  ResultRepository resultRepository
 
+  //private static final Integer DEPTH_FOUR = 4
   /**
    * Idempotent persistence of Games, Events and Athletes for a single line of input
    * @param input
@@ -46,16 +47,15 @@ class LoadDataService {
     event.addResult(result)
 
     log.info "save athlete: $athlete"
-    athleteRepository.save(athlete, DEPTH_FOUR) //optional but increase game depth
+    athleteRepository.save(athlete)
 
     log.info "update event with results: $event"
-    eventRepository.save(event, DEPTH_FOUR) //optional but increase game depth
+    eventRepository.save(event)
 
     game.events.remove(event)
     game.events.add(event)
 
-    Game savedGame = gameRepository.save(game, DEPTH_ONE) //optimized to save at 1 depth since event + results already persisted
-
+    Game savedGame = gameRepository.save(game)
     log.info "saved game: ${savedGame.name}, event: ${event.name}  and athlete: ${athlete.name}"
 
   }
@@ -97,6 +97,7 @@ class LoadDataService {
       log.info("event not found for event: ${input.event} and year: ${input.year}")
       event = new Event()
     }
+    event = getMedalist(event, input)
     event.with {
       name = input.event
       sport = input.sport
@@ -150,4 +151,20 @@ class LoadDataService {
     }
   }
 
+  /**
+   * Assign medalist to event
+   * @param event
+   * @param input
+   * @return
+   */
+  Event getMedalist(Event event, InputLine input) {
+    if (input.medal == Medal.Gold.toString()) {
+      event.goldMedalist = input.name
+    } else if (input.medal == Medal.Silver.toString()) {
+      event.silverMedalist = input.name
+    } else if (input.medal == Medal.Bronze.toString()) {
+      event.bronzeMedalist = input.name
+    }
+    event
+  }
 }

@@ -28,8 +28,14 @@ class GraphService {
   static final String HOST = 'HOST'
   static final String PARTICIPATED_IN = 'PARTICIPATED_IN'
   static final String EMPTY_JSON = '{}'
-  private static final Integer DEPTH = 5
 
+  /**
+   *
+   * @param year
+   * @param season
+   * @param sport
+   * @return
+   */
   @Transactional(readOnly = true)
   String getGraphByYearAndSeason(Integer year, String season, String sport) {
     Game game = gameRepository.findOneByYearAndSeason(year, season)
@@ -55,7 +61,6 @@ class GraphService {
             nodes : nodes,
             links : links
         ]
-
     ).toString()
   }
 
@@ -120,34 +125,30 @@ class GraphService {
               type  : PARTICIPATED_IN,
               source: athleteIndex,
               target: eventIndex,
-              medal : result.medal
+              medal : getMedal(event, athlete)
           ]
         }
       }
-      //4. add athlete nodes and links
-//      List<Tuple> athleteData = event.results.collect { r  ->
-//        def athleteNode = [
-//            type: Athlete.simpleName,
-//            index: i,
-//            name: r.athlete.name,
-//            country: r.athlete.country
-//        ]
-//
-//        def athleteLink = [
-//            type: PARTICIPATED_IN,
-//            source: i,
-//            target: eventIndex,
-//            medal: r.medal
-//        ]
-//        i++
-//        new Tuple(athleteNode, athleteLink)
-//      }
-//      nodes.addAll(athleteData.get(0))
-//      links.addAll(athleteData.get(1))
-
     }
+
     log.info "getNodesAndLinks() nodes found: $i"
     new Tuple(nodes, links)
+  }
+
+  /**
+   * get medal for link
+   * @param event
+   * @param athlete
+   * @return Medal
+   */
+  private String getMedal(Event event, Athlete athlete) {
+    if (event.goldMedalist == athlete.name) {
+      Medal.Gold
+    } else if (event.silverMedalist == athlete.name) {
+      Medal.Silver
+    } else if (event.bronzeMedalist == athlete.name) {
+      Medal.Bronze
+    }
   }
 
   /**
