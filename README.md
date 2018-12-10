@@ -5,7 +5,10 @@
 Represent 120 years Olympic History as Graph.  Participation and results from every Olympic event 
  over 120 years is represented in graph form. Nodes include games, events and athletes. Relationships are 
  athlete participation in events and events hosted by games.
+
+![1984_summer_olympics_all_swimming](1984_summer_olympics_all_swimming.png)
   
+
  ***Primary Technologies***
  * [Spring Boot 2](https://spring.io/projects/spring-boot) Web application for REST endpoints and data load
  * [Neo4j Database](https://neo4j.com/) to persist data in graph form
