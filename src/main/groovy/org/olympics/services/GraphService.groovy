@@ -110,7 +110,10 @@ class GraphService {
             index: eventIndex,
             name : event.name,
             sport : event.sport,
-            sportGroup : event.sportGroup
+            sportGroup : event.sportGroup,
+            goldMedalist: event.goldMedalist,
+            silverMedalist: event.silverMedalist,
+            bronzeMedalist: event.bronzeMedalist
         ]
         i++
 

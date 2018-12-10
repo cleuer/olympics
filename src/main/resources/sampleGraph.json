@@ -12,14 +12,10 @@
       "index": 1,
       "name": "Swimming Men's 1,500 metres Freestyle",
       "sport": "Swimming",
-      "sportGroup": 2
-    },
-    {
-      "type": "Athlete",
-      "index": 2,
-      "name": "Rainer Henkel",
-      "country": "West Germany",
-      "sex": "Male"
+      "sportGroup": 2,
+      "goldMedalist": "Michael Jon O'Brien",
+      "silverMedalist": "Rainer Henkel",
+      "bronzeMedalist": "Stefan Pfeiffer"
     }
   ],
   "links": [
@@ -27,12 +23,6 @@
       "type": "HOST",
       "source": 0,
       "target": 1
-    },
-    {
-      "type": "PARTICIPATED_IN",
-      "source": 2,
-      "target": 1,
-      "medal": null
     }
   ]
 }

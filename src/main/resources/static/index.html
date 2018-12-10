@@ -21,7 +21,7 @@
         stroke-width: 3px;
     }
     .silverlink {
-        stroke: #c0c0c0;
+        stroke: #a7a7ad;
         stroke-opacity: .8;
         stroke-width: 3px;
     }
@@ -38,6 +38,32 @@
     .node {
         stroke: #000;
         stroke-width: 1px;
+    }
+    .d3-tip {
+        line-height: 1;
+        font-weight: normal;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        border-radius: 2px;
+    }
+
+    .d3-tip:after {
+        box-sizing: border-box;
+        display: inline;
+        font-size: 10px;
+        width: 100%;
+        line-height: 1;
+        color: rgba(0, 0, 0, 0.8);
+        content: "\25BC";
+        position: absolute;
+        text-align: center;
+    }
+
+    .d3-tip.n:after {
+        margin: -1px 0 0 0;
+        top: 100%;
+        left: 0;
     }
 
 </style>
@@ -73,14 +99,20 @@
 
 
 <script src="//d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script type="text/javascript">
 
   //default olympics to display on first draw
   var defaultUrl = "/graph?year=1984&season=Summer"
 
-  //color scheme
-  //var color = d3.scaleOrdinal(d3.schemeCategory10);
+  //color scheme for sport categories
   var c10 = d3.scale.category10();
+
+  //attribution: thanks to creators of http://labratrevenge.com/d3-tip
+  var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html( function(d) { return toolTip(d); })
 
   //draw the olympic graph. can be user triggered
   function draw(url) {
@@ -93,6 +125,8 @@
     var svg = d3.select("body").append("svg")
       .attr("width", width)
       .attr("height", height);
+
+    svg.call(tip);
 
     var force = d3.layout.force().charge(-200).linkDistance(130).size([width, height]);
 
@@ -118,6 +152,8 @@
                      .attr("stroke","#fff")
                      .style("stroke-width", 2.0)
                      .attr("fill", function(d) { return circleColor(d); } )
+                     .on('mouseover', tip.show)
+                     .on('mouseout', tip.hide)
                      .call(force.drag);
 
         // add a label to each node
@@ -226,6 +262,27 @@
        }
      }
 
+     //display tooltip of athlete and event properties and style colors to match circle
+     function toolTip(d) {
+       var cirColor = circleColor(d);
+       if (d.type == "Athlete") {
+         return "<div><strong>"+ d.name +"</strong></div>"
+                +"<div><strong>"+ d.country +"</strong></div>"
+                +"<div><span style='color:" + cirColor + "'>"+ d.sex +"</span></div>"
+                ;
+       } else if (d.type == "Game") {
+          return "<div><strong>"+ d.gameName +"</strong></div>"
+                +"<div><span style='color:#009F3D'>"+ d.city +"</span></div>"
+                ;
+       } else if (d.type == "Event") {
+          return "<div><strong>"+ d.name +"</strong></div>"
+                +"<div><span style='color:#ebd200'>Gold Medalist: "+ d.goldMedalist +"</span></div>"
+                +"<div><span style='color:#a7a7ad'>Silver Medalist: "+ d.silverMedalist +"</span></div>"
+                +"<div><span style='color:#cd7f32'>Bronze Medalist: "+ d.bronzeMedalist +"</span></div>"
+                ;
+       }
+     }
+
      //color categories for games, events and athletes
      function circleColor(d) {
        if (d.type == "Event") {
@@ -238,7 +295,7 @@
          }
          return "lightblue";
        } else if (d.type == "Game") {
-          //official Olympic green!
+          //official Olympic green
          return "#009F3D";
        }
      }

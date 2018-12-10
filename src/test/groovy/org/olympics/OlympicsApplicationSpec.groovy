@@ -17,7 +17,9 @@ class OlympicsApplicationSpec extends Specification {
 		given: 'a linked game, event, result and athlete'
 		Game game = new Game(id: 0L, name: '1984 Summer', season: 'Summer', city: 'Los Angeles')
 		String sport = "Swimming"
-		Event event = new Event(id: 1L, name: "Swimming Men's 1,500 metres Freestyle", sport: sport, sportGroup: 2)
+		Event event = new Event(id: 1L, name: "Swimming Men's 1,500 metres Freestyle", sport: sport, sportGroup: 2,
+		                    goldMedalist: "Michael Jon O'Brien", silverMedalist: 'Rainer Henkel',
+				            bronzeMedalist: 'Stefan Pfeiffer')
 		Athlete athlete = new Athlete(id:2L, name: 'Rainer Henkel', country: 'West Germany', sex: 'Male')
 		Result result = new Result(id: 3L, athlete: athlete, event: event, medal: 'Silver')
 		event.addResult(result)
