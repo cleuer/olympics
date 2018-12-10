@@ -5,13 +5,13 @@
 Represent 120 years Olympic History as Graph.  Participation and results from every Olympic event 
  over 120 years is represented in graph form. Nodes include games, events and athletes. Relationships are 
  athlete participation in events and events hosted by games.
- 
+  
  ***Primary Technologies***
  * [Spring Boot 2](https://spring.io/projects/spring-boot) Web application for REST endpoints and data load
  * [Neo4j Database](https://neo4j.com/) to persist data in graph form
  * [Spring Data Neo4j](https://spring.io/projects/spring-data-neo4j) for object graph model
  * [Apache Groovy language](http://groovy-lang.org/) for expressiveness and Spring/Java integration
- * [D3.js](https://d3js.org/) to visualize graph of Olympic games, events and athletes
+ * [D3.js](https://d3js.org/) and Javascript to visualize graph of Olympic games, events and athletes
 
  ***Support Technologies***
  * [Gradle](https://gradle.org/) to build application
@@ -21,11 +21,23 @@ Represent 120 years Olympic History as Graph.  Participation and results from ev
  
  _all technologies are open source_
 
+**Get Project**
+--------------------------------------------------------------------------
+You will need Neo4j installed on your Linux or Mac machine,
+
+    $git clone https://github.com/cleuer/olympics.git
+
+Edit `src/main/resources.application.properties` to reflect your Neo4J password
+
+    spring.data.neo4j.username=neo4j
+    spring.data.neo4j.password=admin
+
 **Start Neo4j**
 --------------------------------------------------------------------------
 First start Neo4j database in a terminal
 
     $neo4j console
+
 
 **Start Application**
 --------------------------------------------------------------------------
@@ -33,15 +45,20 @@ Run Spring Boot application
 
     $./gradlew clean bootRun
 
-**Loading Data**
+View visualization in browser
+
+     http://localhost:8090
+
+**Load Data**
 ---------------------------------------------------------------------------
 Data files are located in `src/main/resources` in csv format. The file `olympic_history_120_years.csv` is the complete dataset
-To load data when the application starts modify setting `src/main/resources`:
+To load data when the application starts modify setting in `src/main/resources.application.properties` 
+Below is the default which will load two Olympic events from 1984 at startup:
  
     olympics.load-data=true
-    olympics.data-file-name=sample.csv
+    olympics.data-file-name=olympic_history_1984_summer_swimming_sample.csv
 
-**Testing**
+**Run Tests**
 --------------------------------------------------------------------------
 Execute automated tests
 
@@ -54,3 +71,5 @@ Historical dataset of 120 years Olympic history is available on kaggle.com
 [120 years of Olympic history: athletes and results](https://www.kaggle.com/heesoo37/120-years-of-olympic-history-athletes-and-results)
 
 _Special thanks to Randi H Griffin and contributors to www.sports-reference.com for creating and curating this dataset_
+
+  ***Author: Christopher Leuer***
