@@ -1,6 +1,7 @@
 package org.olympics.services
 
 import groovy.util.logging.Slf4j
+import org.olympics.beans.SportGroups
 import org.olympics.data.InputLine
 import org.olympics.domains.*
 import org.olympics.repositories.*
@@ -28,6 +29,9 @@ class LoadDataService {
 
   @Autowired
   ResultRepository resultRepository
+
+  @Autowired
+  SportGroups sportGroups
 
   //private static final Integer DEPTH_FOUR = 4
   /**
@@ -102,6 +106,7 @@ class LoadDataService {
       name = input.event
       sport = input.sport
       year = input.year
+      sportGroup = sportGroups.getGroup(sport)
       it
     }
   }
@@ -125,7 +130,7 @@ class LoadDataService {
     athlete.with {
       name = input.name
       age = input.age
-      sex = input.sex
+      sex = input.sex == 'F' ? 'Female' : 'Male'
       country = input.team
       countryAbbr = input.noc
       height = input.height
@@ -166,5 +171,17 @@ class LoadDataService {
       event.bronzeMedalist = input.name
     }
     event
+  }
+
+  /**
+   * Broad categories for groups of sports
+   * @param sport
+   * @return
+   */
+  Integer getSportGroup(String sport) {
+
+
+
+
   }
 }

@@ -10,13 +10,16 @@
     {
       "type": "Event",
       "index": 1,
-      "name": "Swimming Men's 1,500 metres Freestyle"
+      "name": "Swimming Men's 1,500 metres Freestyle",
+      "sport": "Swimming",
+      "sportGroup": 2
     },
     {
       "type": "Athlete",
       "index": 2,
       "name": "Rainer Henkel",
-      "country": "West Germany"
+      "country": "West Germany",
+      "sex": "Male"
     }
   ],
   "links": [
@@ -29,7 +32,7 @@
       "type": "PARTICIPATED_IN",
       "source": 2,
       "target": 1,
-      "medal": "Silver"
+      "medal": null
     }
   ]
 }

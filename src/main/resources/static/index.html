@@ -2,17 +2,41 @@
 <meta charset="utf-8">
 <style>
 
-    .node.actor { fill: #888; }
-    .node.movie { fill: #BBB; }
-    .link { stroke: #85abff; stroke-opacity: .6; stroke-width: 2px; }
-    .goldlink { stroke: #ebd200; stroke-opacity: .8; stroke-width: 4px; }
-    .silverlink { stroke: #c0c0c0; stroke-opacity: .8; stroke-width: 4px; }
-    .bronzelink { stroke: #cd7f32; stroke-opacity: .8; stroke-width: 4px; }
-    .node text {
-        pointer-events: auto;
-        font: 10px sans-serif;
-        text-anchor: middle;
+    svg {
+        width: 100%;
     }
+
+    text {
+        font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    }
+
+    .link {
+        stroke: #85abff;
+        stroke-opacity: .6;
+        stroke-width: 2px;
+    }
+    .goldlink {
+        stroke: #ebd200;
+        stroke-opacity: .8;
+        stroke-width: 4px;
+    }
+    .silverlink {
+        stroke: #c0c0c0;
+        stroke-opacity: .8;
+        stroke-width: 4px;
+    }
+    .bronzelink {
+        stroke: #cd7f32;
+        stroke-opacity: .8;
+        stroke-width: 4px;
+    }
+
+    .node {
+        stroke: #000;
+        stroke-width: 1px;
+    }
+
+
 </style>
 
 <head>
@@ -39,18 +63,35 @@
   //default olympics to display on first draw
   var defaultUrl = "/graph?year=1984&season=Summer"
 
+  //color scheme
+  //var color = d3.scaleOrdinal(d3.schemeCategory10);
+  var c10 = d3.scale.category10();
+
+  //draw the olympic graph. can be user triggered
   function draw(url) {
 
     console.log("draw olympics");
-    var width = 960,
-    height = 500
+
+    var width = 1000;
+    var height = 1000;
+
+    var margin = {
+      top: 50,
+      bottom: 50,
+      left: 50,
+      right: 50,
+    }
 
     var svg = d3.select("body").append("svg")
       .attr("width", width)
-      .attr("height", height);
+      .attr("height", height)
+      .attr('transform', 'translate(' + margin.top + ',' + margin.left + ')');
 
-    var force = d3.layout.force()
-            .charge(-200).linkDistance(100).size([width, height]);
+    width = width - margin.left - margin.right;
+    height = height - margin.top - margin.bottom;
+
+
+    var force = d3.layout.force().charge(-200).linkDistance(100).size([width, height]);
 
     if (url == null) {
         url = defaultUrl
@@ -70,17 +111,12 @@
                      .attr("class", "node");
 
         var circle = node.append("circle")
-                     .attr("r", 25 )
+                     .attr("r", function(d) { return circleSize(d); } )
                      .attr("stroke","black")
-                     .attr("fill", function (d) {
-                        if (d.label == "movie") {
-                          return "lightgreen";
-                        } else {
-                          return "purple";
-                        }
-                      })
+                     .attr("fill", function(d) { return circleColor(d); } )
                      .call(force.drag);
 
+/* todo: remove me
         var text = node.append("text")
            .attr("y", 15)
            .text(function(d) {
@@ -92,6 +128,26 @@
                   }
                   return name
            });
+
+*/
+               // add a label to each node
+        var text = node.append("text")
+        .attr("dx", 12)
+        .attr("dy", ".35em")
+        .text(function(d) {
+                  var name
+                  if (d.type == "Game") {
+                     name = d.gameName
+                  } else {
+                     name = d.name
+                  }
+                  return name
+         })
+        .style("stroke", "black")
+        .style("stroke-width", 0.5)
+        .style("fill", function(d) { return circleColor(d); });
+
+
 
         force.on("tick", function() {
             link.attr("x1", function(d) { return d.source.x; })
@@ -107,6 +163,7 @@
 
   draw();
 
+    //allow user to redraw with different parameters
     function handleClick(event){
        console.log(event);
        var year=document.getElementById("yearId").value
@@ -123,6 +180,7 @@
        return false;
   }
 
+     //unique classes to show Gold, Silver, Bronze medals
      function linkClass(l) {
        if (l.type == "PARTICIPATED_IN") {
           if (l.medal == null) {
@@ -136,6 +194,34 @@
            }
         }
        return "link";
+     }
+
+
+     //size circle smaller for atheletes
+     function circleSize(d) {
+       if (d.type == "Athlete") {
+         return 8;
+       } else if (d.type == "Event") {
+         return 16;
+       } else if (d.type == "Game") {
+         return 32;
+       }
+     }
+      //color categories for games, events and athletes
+      function circleColor(d) {
+       if (d.type == "Event") {
+         return c10(d.sportGroup);
+       } else if (d.type == "Athlete") {
+         if (d.sex == "Female") {
+           return "#990099"; //purple
+         } else {
+           return "#3366cc"; //blue
+         }
+         return "lightblue";
+       } else if (d.type == "Game") {
+          //official Olympic green!
+         return "#009F3D";
+       }
      }
 
 </script>

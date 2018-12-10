@@ -95,7 +95,9 @@ class GraphService {
         nodes << [
             type : Event.simpleName,
             index: eventIndex,
-            name : event.name
+            name : event.name,
+            sport : event.sport,
+            sportGroup : event.sportGroup
         ]
         i++
 
@@ -116,7 +118,8 @@ class GraphService {
               type   : Athlete.simpleName,
               index  : athleteIndex,
               name   : athlete.name,
-              country: athlete.country
+              country: athlete.country,
+              sex    : athlete.sex
           ]
           i++
 
