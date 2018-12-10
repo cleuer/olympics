@@ -13,7 +13,7 @@ import org.neo4j.ogm.annotation.Relationship
  */
 @NodeEntity
 @ToString(includeNames = true, excludes = 'events')
-@EqualsAndHashCode(includes = ['id'])
+@EqualsAndHashCode(includes = ['name', 'sex', 'countryAbbr'])
 class Athlete {
 
   @Id

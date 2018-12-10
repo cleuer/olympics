@@ -118,7 +118,7 @@ class LoadDataService {
    * @return Athlete
    */
   Athlete getAthlete(InputLine input, Event event) {
-    Athlete athlete = athleteRepository.findOneByNameAndSexAndCountryAbbr(input.name, input.sex, input.noc)
+    Athlete athlete = athleteRepository.findOneByNameAndSexAndCountryAbbr(input.name, getSex(input), input.noc)
     if (athlete) {
       log.info "athlete found for ${input.name}"
     } else {
@@ -130,7 +130,7 @@ class LoadDataService {
     athlete.with {
       name = input.name
       age = input.age
-      sex = input.sex == 'F' ? 'Female' : 'Male'
+      sex = getSex(input)
       country = input.team
       countryAbbr = input.noc
       height = input.height
@@ -156,6 +156,9 @@ class LoadDataService {
     }
   }
 
+  String getSex(InputLine input) {
+    input.sex == 'F' ? 'Female' : 'Male'
+  }
   /**
    * Assign medalist to event
    * @param event
@@ -173,15 +176,4 @@ class LoadDataService {
     event
   }
 
-  /**
-   * Broad categories for groups of sports
-   * @param sport
-   * @return
-   */
-  Integer getSportGroup(String sport) {
-
-
-
-
-  }
 }

@@ -14,7 +14,7 @@ import org.neo4j.ogm.annotation.Relationship
 
 @NodeEntity
 @ToString(includeNames = true, excludes = 'events')
-@EqualsAndHashCode(includes = ['id'])
+@EqualsAndHashCode(includes = ['year', 'season'])
 class Game {
 
   @Id

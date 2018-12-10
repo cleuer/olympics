@@ -72,26 +72,14 @@
 
     console.log("draw olympics");
 
-    var width = 1000;
+    var width = 1200;
     var height = 1000;
-
-    var margin = {
-      top: 50,
-      bottom: 50,
-      left: 50,
-      right: 50,
-    }
 
     var svg = d3.select("body").append("svg")
       .attr("width", width)
-      .attr("height", height)
-      .attr('transform', 'translate(' + margin.top + ',' + margin.left + ')');
+      .attr("height", height);
 
-    width = width - margin.left - margin.right;
-    height = height - margin.top - margin.bottom;
-
-
-    var force = d3.layout.force().charge(-200).linkDistance(100).size([width, height]);
+    var force = d3.layout.force().charge(-200).linkDistance(130).size([width, height]);
 
     if (url == null) {
         url = defaultUrl
@@ -116,23 +104,9 @@
                      .attr("fill", function(d) { return circleColor(d); } )
                      .call(force.drag);
 
-/* todo: remove me
+        // add a label to each node
         var text = node.append("text")
-           .attr("y", 15)
-           .text(function(d) {
-                  var name
-                  if (d.type == "Game") {
-                     name = d.gameName
-                  } else {
-                     name = d.name
-                  }
-                  return name
-           });
-
-*/
-               // add a label to each node
-        var text = node.append("text")
-        .attr("dx", 12)
+        .attr("dx", function(d) { return textOffset(d); })
         .attr("dy", ".35em")
         .text(function(d) {
                   var name
@@ -196,19 +170,30 @@
        return "link";
      }
 
-
      //size circle smaller for atheletes
      function circleSize(d) {
-       if (d.type == "Athlete") {
+       if (d.type== "Athlete") {
          return 8;
        } else if (d.type == "Event") {
          return 16;
        } else if (d.type == "Game") {
-         return 32;
+         return 24;
        }
      }
-      //color categories for games, events and athletes
-      function circleColor(d) {
+
+     //offsets for text
+     function textOffset(d) {
+       if (d.type == "Athlete") {
+         return 12;
+       } else if (d.type == "Event") {
+         return 20;
+       } else if (d.type == "Game") {
+         return 28;
+       }
+     }
+
+     //color categories for games, events and athletes
+     function circleColor(d) {
        if (d.type == "Event") {
          return c10(d.sportGroup);
        } else if (d.type == "Athlete") {
