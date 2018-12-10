@@ -22,13 +22,18 @@ class GraphController {
   @Autowired
   GraphService graphService
 
+  private static final String MEDAL_FILTER_OFF = 'off'
+
   @GetMapping('/graph')
   @ResponseStatus(HttpStatus.OK)
   String getGraphByYearAndSeason(@RequestParam(value='year', required = true) Integer year,
                                  @RequestParam(value='season', required = true) String season,
-                                 @RequestParam(value='sport', required = false) String sport) {
-    log.info("Get graph request for $year $season olympics. sport filter: $sport")
-    graphService.getGraphByYearAndSeason(year, season, sport)
+                                 @RequestParam(value='sport', required = false) String sport,
+                                 @RequestParam(value='gold', defaultValue = MEDAL_FILTER_OFF) String gold,
+                                 @RequestParam(value='silver', defaultValue = MEDAL_FILTER_OFF) String silver,
+                                 @RequestParam(value='bronze', defaultValue = MEDAL_FILTER_OFF) String bronze) {
+    log.info("Get graph request for $year $season olympics. filter by: $sport $gold $silver $bronze")
+    graphService.getGraphByYearAndSeason(year, season, sport, gold, silver, bronze)
   }
 
 }

@@ -25,9 +25,11 @@ class GraphService {
   @Autowired
   EventRepository eventRepository
 
-  static final String HOST = 'HOST'
-  static final String PARTICIPATED_IN = 'PARTICIPATED_IN'
-  static final String EMPTY_JSON = '{}'
+  private static final String HOST = 'HOST'
+  private static final String PARTICIPATED_IN = 'PARTICIPATED_IN'
+  private static final String EMPTY_JSON = '{}'
+  private static final String ON = 'on'
+  private static final String OFF = 'off'
 
   /**
    *
@@ -37,24 +39,36 @@ class GraphService {
    * @return
    */
   @Transactional(readOnly = true)
-  String getGraphByYearAndSeason(Integer year, String season, String sport) {
+  String getGraphByYearAndSeason(Integer year, String season, String sport, String gold, String silver,
+                                 String bronze) {
     Game game = gameRepository.findOneByYearAndSeason(year, season)
     if (game) {
       log.info "found game: ${game.name} hosted in city: ${game.city}"
-      buildGraphForGame(game, sport)
+      buildGraphForGame(game, sport, gold, silver, bronze)
     } else {
       log.info "could not find game for year: $year and season: $season"
       EMPTY_JSON
     }
   }
 
-  String buildGraphForGame(Game game, String sport) {
+  /**
+   * Build a graph of an Olympics with a game node and many event nodes linked by result to athlete nodes
+   *  events can be filtered by sport ("Swimming", "Fencing") and/or athletes can be filtered by medal
+   * @param game
+   * @param sport
+   * @param gold
+   * @param silver
+   * @param bronze
+   * @return graph of nodes and links
+   */
+  String buildGraphForGame(Game game, String sport, String gold, String silver,
+                           String bronze) {
 
     log.info "build graph for game: $game"
 
     List<Map<String, Object>> nodes
     List<Map<String, Object>> links
-    (nodes, links) = getNodesAndLinks(game, sport)
+    (nodes, links) = getNodesAndLinks(game, sport, gold, silver, bronze)
 
     new JsonBuilder(
         [
@@ -65,11 +79,12 @@ class GraphService {
   }
 
   /**
-   * Build map of two deep elements containing nodes and links
+   * Build map of two deep elements containing nodes and links optimized for d3.js force library
    * @param game
-   * @return
+   * @return Tuple of nodes and links
    */
-  Tuple getNodesAndLinks(Game game, String sport) {
+  Tuple getNodesAndLinks(Game game, String sport,  String gold, String silver,
+                         String bronze) {
 
     List<Map<String, Object>> nodes = []
     List<Map<String, Object>> links = []
@@ -88,9 +103,7 @@ class GraphService {
 
     //2. add event nodes
     game.events.each { event ->
-
       if (includeEvent(event, sport)) {
-
         int eventIndex = i
         nodes << [
             type : Event.simpleName,
@@ -112,24 +125,26 @@ class GraphService {
         List<Result> results = event?.results
 
         results.each { result ->
-          int athleteIndex = i
           Athlete athlete = result.athlete
-          nodes << [
-              type   : Athlete.simpleName,
-              index  : athleteIndex,
-              name   : athlete.name,
-              country: athlete.country,
-              sex    : athlete.sex
-          ]
-          i++
+          if (includeAthlete(event, athlete, gold, silver, bronze)) {
+            int athleteIndex = i
+            nodes << [
+                type   : Athlete.simpleName,
+                index  : athleteIndex,
+                name   : athlete.name,
+                country: athlete.country,
+                sex    : athlete.sex
+            ]
+            i++
 
-          //5. add athlete -> PARTICIPATED_IN -> event link
-          links << [
-              type  : PARTICIPATED_IN,
-              source: athleteIndex,
-              target: eventIndex,
-              medal : getMedal(event, athlete)
-          ]
+            //5. add athlete -> PARTICIPATED_IN -> event link
+            links << [
+                type  : PARTICIPATED_IN,
+                source: athleteIndex,
+                target: eventIndex,
+                medal : getMedal(event, athlete)
+            ]
+          }
         }
       }
     }
@@ -144,7 +159,7 @@ class GraphService {
    * @param athlete
    * @return Medal
    */
-  private String getMedal(Event event, Athlete athlete) {
+  private Medal getMedal(Event event, Athlete athlete) {
     if (event.goldMedalist == athlete.name) {
       Medal.Gold
     } else if (event.silverMedalist == athlete.name) {
@@ -158,7 +173,7 @@ class GraphService {
    * Return true if filter sport matches event sport Or sport filter is null
    * @param event
    * @param sport
-   * @return
+   * @return Boolean to include event
    */
   private Boolean includeEvent (Event event, String sport) {
     if (sport) {
@@ -166,6 +181,24 @@ class GraphService {
     } else {
       true
     }
+  }
+
+  /**
+   * Include athletes by medal filters. if no medal filters for gold, silver or bronze, then include all
+   * athletes
+   * @param event
+   * @param athlete
+   * @param gold
+   * @param silver
+   * @param bronze
+   * @return Boolean to include athlete
+   */
+  private Boolean includeAthlete (Event event, Athlete athlete, String gold, String silver, String bronze) {
+    ((gold == ON  && getMedal(event, athlete) == Medal.Gold) ||
+       (silver == ON && getMedal(event, athlete) == Medal.Silver) ||
+           (bronze == ON && getMedal(event, athlete) == Medal.Bronze) ||
+        (gold == OFF && silver == OFF && bronze == OFF)
+    )
   }
 
 }

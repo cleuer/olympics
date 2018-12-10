@@ -24,7 +24,7 @@ class OlympicsApplicationSpec extends Specification {
 		game.events.add(event)
 
 		when: 'build graph for game'
-		String retval = olympicsService.buildGraphForGame(game, sport)
+		String retval = olympicsService.buildGraphForGame(game, sport, null, null, null)
 
 		then: 'json has correct nodes and links'
 		retval.replaceAll("\\s+","") == getClass().getResourceAsStream('/sampleGraph.json').text.replaceAll("\\s+","")
