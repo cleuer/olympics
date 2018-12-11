@@ -1,4 +1,4 @@
-# Olympics History Graph
+# 120 Years of Olympics History Force Directed Graph
 
 **Overview**
 --------------------------------------------------------------------------
