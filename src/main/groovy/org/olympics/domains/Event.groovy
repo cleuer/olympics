@@ -25,9 +25,6 @@ class Event {
   String sport
   Integer sportGroup
   Integer year
-
-
-  //workaround because seems there is a Spring Data Neo4j BUG saving extra props on relationships
   String goldMedalist
   String silverMedalist
   String bronzeMedalist
@@ -42,5 +39,4 @@ class Event {
     }
     this.results.add(result);
   }
-
 }

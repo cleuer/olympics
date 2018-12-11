@@ -46,10 +46,7 @@ class DataLoader implements ApplicationRunner {
         if (l > 0) {
           InputLine input = new InputLine(line)
           log.info "$input"
-          if (input.gameName == '1984 Summer' && input.sport == 'Swimming') {
             loadDataService.loadOlympicData(input)
-          }
-
         }
         l++
       }

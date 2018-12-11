@@ -35,5 +35,4 @@ class GraphController {
     log.info("Get graph request for $year $season olympics. filter by: $sport $gold $silver $bronze")
     graphService.getGraphByYearAndSeason(year, season, sport, gold, silver, bronze)
   }
-
 }

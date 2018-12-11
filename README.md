@@ -1,10 +1,11 @@
-# 120 Years of Olympics History Force Directed Graph
+# Olympics History Graph with Spring Data Neo4j and D3.js
 
 **Overview**
 --------------------------------------------------------------------------
-Represent 120 years Olympic History as Graph.  Participation and results from every Olympic event 
- over 120 years is represented in graph form. Nodes include games, events and athletes. Relationships are 
- athlete participation in events and color code by gold, silver, bronze or blue for participation.
+The force directed graph represents 120 years Olympic History including participation and results from every Olympic 
+event since 1896. It is implemented in Spring Data Neo4J and D3.js. Nodes are games, events and athletes. Relationships 
+are (1) events hosted by games and (2) athlete participation in events.  Participation relationships are 
+ color coded by gold, silver, bronze (and blue for participation ). Event nodes are colored by sporting category.
  
 
 ![1984_summer_olympics_all_swimming](1984_summer_olympics_all_swimming.png)

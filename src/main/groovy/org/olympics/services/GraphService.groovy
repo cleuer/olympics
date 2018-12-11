@@ -36,7 +36,7 @@ class GraphService {
   private static final String OFF = 'off'
 
   /**
-   *
+   * Get graph by year and season with filters for sport and medals
    * @param year
    * @param season
    * @param sport
