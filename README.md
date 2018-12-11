@@ -4,7 +4,8 @@
 --------------------------------------------------------------------------
 Represent 120 years Olympic History as Graph.  Participation and results from every Olympic event 
  over 120 years is represented in graph form. Nodes include games, events and athletes. Relationships are 
- athlete participation in events and events hosted by games.
+ athlete participation in events and color code by gold, silver, bronze or blue for participation.
+ 
 
 ![1984_summer_olympics_all_swimming](1984_summer_olympics_all_swimming.png)
   
@@ -61,6 +62,13 @@ Below is the default which will load two Olympic events from 1984 at startup:
     olympics.load-data=true
     olympics.data-file-name=olympic_history_1984_summer_swimming_sample.csv
 
+**Setting**
+---------------------------------------------------------------------------
+By default an athlete will only display once in a graph. To enable the same athlete
+to display once for each event (see image above) change the setting to true:
+
+     olympics.graph-detach-athletes=true
+     
 **Run Tests**
 --------------------------------------------------------------------------
 Execute automated tests

@@ -9,6 +9,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 @ConfigurationProperties('olympics')
 class OlympicsConfig {
 
+  //although there is one athlete, graph will include a unique athlete node for each event
+  Boolean graphDetachAthletes
   String dataFileName
   Boolean loadData
 }

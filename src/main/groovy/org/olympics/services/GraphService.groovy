@@ -1,6 +1,7 @@
 package org.olympics.services
 
 import groovy.util.logging.Slf4j
+import org.olympics.config.OlympicsConfig
 import org.olympics.domains.*
 import org.olympics.repositories.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,6 +25,9 @@ class GraphService {
 
   @Autowired
   EventRepository eventRepository
+
+  @Autowired
+  OlympicsConfig olympicsConfig
 
   private static final String HOST = 'HOST'
   private static final String PARTICIPATED_IN = 'PARTICIPATED_IN'
@@ -124,21 +128,41 @@ class GraphService {
             target: eventIndex
         ]
 
-//     4. add event nodes
+      //4. add athlete nodes
         List<Result> results = event?.results
-
         results.each { result ->
           Athlete athlete = result.athlete
           if (includeAthlete(event, athlete, gold, silver, bronze)) {
-            int athleteIndex = i
-            nodes << [
-                type   : Athlete.simpleName,
-                index  : athleteIndex,
-                name   : athlete.name,
-                country: athlete.country,
-                sex    : athlete.sex
-            ]
-            i++
+            Integer athleteIndex
+            //although there is one athlete, graph will include a unique athlete node for each event
+            if (olympicsConfig.graphDetachAthletes) {
+              athleteIndex = i
+              nodes << [
+                  type   : Athlete.simpleName,
+                  index  : athleteIndex,
+                  name   : athlete.name,
+                  country: athlete.country,
+                  sex    : athlete.sex
+              ]
+              i++
+            } else {
+              Map<String, Object> existingAthleteNode  = nodes.find { node ->
+                node['type'] == 'Athlete' && node['name'] == athlete.name && node['country'] == athlete.country
+              }
+              if (existingAthleteNode) {
+                athleteIndex = existingAthleteNode['index'] as Integer
+              } else {
+                athleteIndex = i
+                nodes << [
+                    type   : Athlete.simpleName,
+                    index  : athleteIndex,
+                    name   : athlete.name,
+                    country: athlete.country,
+                    sex    : athlete.sex
+                ]
+                i++
+              }
+            }
 
             //5. add athlete -> PARTICIPATED_IN -> event link
             links << [
