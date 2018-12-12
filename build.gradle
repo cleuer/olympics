@@ -31,7 +31,7 @@ dependencies {
 	implementation('com.xlson.groovycsv:groovycsv:1.0')
 	implementation("org.springframework.boot:spring-boot-devtools")
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
-	//runtime('org.neo4j:neo4j:3.4.10')
+	//runtime('org.neo4j:neo4j:3.4.10') run embedded neo4j
 	testImplementation('org.neo4j:neo4j-ogm-embedded-driver:3.1.5')
 	testImplementation('org.neo4j:neo4j-ogm-bolt-driver:3.1.5')
 	testImplementation('org.spockframework:spock-core:1.2-groovy-2.5')
