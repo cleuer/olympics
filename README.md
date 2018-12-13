@@ -8,7 +8,7 @@ are (1) events hosted by games and (2) athlete participation in events.  Partici
  color coded by gold, silver, bronze (and blue for participation ). Event nodes are colored by sporting category.
  
 
-![1984_summer_olympics_all_swimming](1984_summer_olympics_all_swimming.png)
+![2010_summer_olympics](2010_winter_olympics.png)
   
 
  ***Primary Technologies***
